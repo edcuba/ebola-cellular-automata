@@ -2,6 +2,7 @@
 #define MATRIX_H
 
 #include "cell.h"
+#include <string>
 #include <vector>
 
 /**
@@ -19,6 +20,7 @@ class CAVector
     size_type size () const { return data.size () - 2; }
     typename std::vector<T>::iterator begin () { return data.begin () + 1; }
     typename std::vector<T>::iterator end () { return data.end () - 1; }
+    virtual std::string dump () = 0;
 };
 
 /**
@@ -28,6 +30,14 @@ class Row : public CAVector<Cell>
 {
   public:
     Row (size_type columns) { data.resize (columns + 2); }
+    std::string dump ()
+    {
+        std::string s;
+        for (auto v : *this) {
+            s += std::to_string (v);
+        }
+        return s;
+    }
 };
 
 /**
@@ -41,6 +51,14 @@ class Matrix : public CAVector<Row>
         for (size_type i = 0; i < rows + 2; ++i) {
             data.push_back (Row (columns));
         }
+    }
+    std::string dump ()
+    {
+        std::string s;
+        for (auto &r : *this) {
+            s += r.dump () + "\n";
+        }
+        return s;
     }
 };
 

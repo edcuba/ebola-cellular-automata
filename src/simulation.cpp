@@ -6,9 +6,18 @@ using namespace std;
 int
 main (int argc, char const *argv[])
 {
-    CA ca (10, 10);
-    for (int i = 0; i < 5; ++i) {
+    // CA configuration
+    int rows = 9;
+    int columns = 18;
+    int regenerationFactor = 4;
+    int delayFactor = 3;
+
+    CA ca (rows, columns, regenerationFactor, delayFactor);
+    ca.seed (20);
+    while (!ca.healthy () || ca.dead ()) {
+        cout << ca.dump () << endl;
         ca.randomStep ();
     }
+    cout << ca.dump () << endl;
     return 0;
 }
