@@ -14,11 +14,11 @@ CA::CA (size_t rows, size_t columns, int regenerationFactor, int delayFactor)
 }
 
 int
-CA::infectedNeighbours (size_t row, size_t column)
+CA::infectedNeighbours (int row, int column)
 {
     int positive = 0;
-    for (size_t r = row - 1; r <= row + 1; ++r) {
-        for (size_t c = column - 1; c <= column + 1; ++c) {
+    for (int r = row - 1; r <= row + 1; ++r) {
+        for (int c = column - 1; c <= column + 1; ++c) {
             Cell val = generation[r][c];
             if (val == INFECTED || val == SPOILED) {
                 positive++;
@@ -69,8 +69,8 @@ CA::step (bool regenerate, bool delay)
 void
 CA::randomStep ()
 {
-    bool regenerate = rand () % regenerationFactor;
-    bool delay = regenerate ? rand () % delayFactor : false;
+    bool regenerate = rand () % regenerationFactor != 0;
+    bool delay = regenerate ? rand () % delayFactor == 0 : false;
     step (regenerate, delay);
 }
 

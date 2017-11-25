@@ -7,16 +7,17 @@ int
 main (int argc, char const *argv[])
 {
     // CA configuration
-    int rows = 9;
-    int columns = 18;
-    int regenerationFactor = 4;
+    int rows = 10;
+    int columns = 20;
+    int regenerationFactor = 5;
     int delayFactor = 3;
 
     CA ca (rows, columns, regenerationFactor, delayFactor);
-    ca.seed (20);
-    while (!ca.healthy () || ca.dead ()) {
+    ca.seed (1);
+    while (!ca.healthy () && !ca.dead ()) {
         cout << ca.dump () << endl;
-        ca.randomStep ();
+        ca.randomStep (); // stochastic
+        // ca.step (true, false);
     }
     cout << ca.dump () << endl;
     return 0;

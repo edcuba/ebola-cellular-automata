@@ -14,7 +14,7 @@ class CA
     Matrix generation;
     int counter = 0;
     Cell nextState (size_t row, size_t column, bool regenerate, bool delay);
-    int infectedNeighbours (size_t row, size_t column);
+    int infectedNeighbours (int row, int column);
 
   public:
     const size_t columns;
