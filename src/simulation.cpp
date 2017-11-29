@@ -1,24 +1,66 @@
 #include "simulation.h"
+#include <cstdlib>
 #include <iostream>
+#include <unistd.h>
 
 using namespace std;
 
 int
-main (int argc, char const *argv[])
+main (int argc, char **argv)
 {
-    // CA configuration
-    int rows = 10;
-    int columns = 20;
-    int regenerationFactor = 5;
-    int delayFactor = 3;
+    // defaults
+    double longProb = 0;
+    double deadProb = 0;
+    double seedProb = 0.0055;
+    int rows = 700;
+    int columns = 700;
 
-    CA ca (rows, columns, regenerationFactor, delayFactor);
-    ca.seed (1);
-    while (!ca.healthy () && !ca.dead ()) {
-        cout << ca.dump () << endl;
-        ca.randomStep (); // stochastic
-        // ca.step (true, false);
+    // parse command line configuration
+    int c;
+    while ((c = getopt (argc, argv, "l:d:r:c:s:")) != -1) {
+        switch (c) {
+            case 'l':
+                longProb = strtod (optarg, NULL);
+                break;
+            case 'd':
+                deadProb = strtod (optarg, NULL);
+                break;
+            case 's':
+                seedProb = strtod (optarg, NULL);
+                break;
+            case 'r':
+                rows = strtol (optarg, NULL, 0);
+                break;
+            case 'c':
+                columns = strtol (optarg, NULL, 0);
+                break;
+        }
     }
+    if (1 - longProb - deadProb < 0) {
+        cerr << "Error: l + d > 1" << endl;
+        return 1;
+    }
+
+    // instantiate celluar automaton
+    CA ca (rows, columns, longProb, deadProb);
+
+    // place infected cells
+    int seedCount = rows * columns * seedProb;
+    ca.seed (seedCount == 0 ? 1 : seedCount);
+
+    // run simulation while CA is not completely dead or empty
+    while (!ca.healthy () && !ca.dead ()) {
+
+        // print generation
+        cout << ca.dump () << endl;
+
+        // perform step
+        ca.randomStep ();
+        usleep (100000);
+    }
+
+    // print last generation (dead/alive)
     cout << ca.dump () << endl;
+
     return 0;
 }

@@ -2,12 +2,12 @@
 #include <cstdlib>
 #include <ctime>
 
-CA::CA (size_t rows, size_t columns, int regenerationFactor, int delayFactor)
-    : generation (rows, columns)
-    , columns (columns)
+CA::CA (size_t rows, size_t columns, double longProb, double deadProb)
+    : columns (columns)
     , rows (rows)
-    , regenerationFactor (regenerationFactor)
-    , delayFactor (delayFactor)
+    , longProb (longProb)
+    , deadProb (deadProb)
+    , generation (rows, columns)
 {
     // initialize the random generator
     srand (time (NULL));
@@ -69,9 +69,17 @@ CA::step (bool regenerate, bool delay)
 void
 CA::randomStep ()
 {
-    bool regenerate = rand () % regenerationFactor != 0;
-    bool delay = regenerate ? rand () % delayFactor == 0 : false;
-    step (regenerate, delay);
+    int choice = rand () % 100;
+    if (choice < longProb * 100) {
+        // long step
+        step (true, true);
+    } else if (choice < (longProb + deadProb) * 100) {
+        // dead stays dead;
+        step (false, false);
+    } else {
+        // healthy
+        step (true, false);
+    }
 }
 
 std::string

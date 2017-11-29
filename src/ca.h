@@ -9,19 +9,12 @@
 
 class CA
 {
-  protected:
-    std::vector<Matrix> generations;
-    Matrix generation;
-    int counter = 0;
-    Cell nextState (size_t row, size_t column, bool regenerate, bool delay);
-    int infectedNeighbours (int row, int column);
-
   public:
     const size_t columns;
     const size_t rows;
-    const int regenerationFactor;
-    const int delayFactor;
-    CA (size_t rows, size_t columns, int regenerationFactor, int delayFactor);
+    const double longProb;
+    const double deadProb;
+    CA (size_t rows, size_t columns, double longProb, double deadProb);
 
     void step (bool regenerate, bool delay);
     void randomStep ();
@@ -29,6 +22,13 @@ class CA
     void seed (int amount);
     bool healthy ();
     bool dead ();
+
+  protected:
+    std::vector<Matrix> generations;
+    Matrix generation;
+    int counter = 0;
+    Cell nextState (size_t row, size_t column, bool regenerate, bool delay);
+    int infectedNeighbours (int row, int column);
 };
 
 #endif
