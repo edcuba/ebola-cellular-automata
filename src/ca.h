@@ -14,7 +14,8 @@ class CA
     const size_t rows;
     const double longProb;
     const double deadProb;
-    CA (size_t rows, size_t columns, double longProb, double deadProb);
+    const double terminalState;
+    CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState);
 
     void step (bool regenerate, bool delay);
     void randomStep ();

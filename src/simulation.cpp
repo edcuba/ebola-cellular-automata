@@ -15,15 +15,21 @@ main (int argc, char **argv)
     int rows = 700;
     int columns = 700;
 
+    // having less than of cells 29% healthy means death
+    double terminalState = 0.29;
+
     // parse command line configuration
     int c;
-    while ((c = getopt (argc, argv, "l:d:r:c:s:")) != -1) {
+    while ((c = getopt (argc, argv, "l:d:r:c:s:t:")) != -1) {
         switch (c) {
             case 'l':
                 longProb = strtod (optarg, NULL);
                 break;
             case 'd':
                 deadProb = strtod (optarg, NULL);
+                break;
+            case 't':
+                terminalState = strtod (optarg, NULL);
                 break;
             case 's':
                 seedProb = strtod (optarg, NULL);
@@ -42,7 +48,7 @@ main (int argc, char **argv)
     }
 
     // instantiate celluar automaton
-    CA ca (rows, columns, longProb, deadProb);
+    CA ca (rows, columns, longProb, deadProb, terminalState);
 
     // place infected cells
     int seedCount = rows * columns * seedProb;
@@ -56,11 +62,17 @@ main (int argc, char **argv)
 
         // perform step
         ca.randomStep ();
-        usleep (100000);
+        usleep (75000);
     }
 
     // print last generation (dead/alive)
     cout << ca.dump () << endl;
+
+    if (ca.dead ()) {
+        cout << "DEAD" << endl;
+    } else {
+        cout << "ALIVE" << endl;
+    }
 
     return 0;
 }

@@ -2,11 +2,12 @@
 #include <cstdlib>
 #include <ctime>
 
-CA::CA (size_t rows, size_t columns, double longProb, double deadProb)
+CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState)
     : columns (columns)
     , rows (rows)
     , longProb (longProb)
     , deadProb (deadProb)
+    , terminalState (terminalState)
     , generation (rows, columns)
 {
     // initialize the random generator
@@ -106,23 +107,41 @@ CA::seed (int amount)
 bool
 CA::healthy ()
 {
+    long alive = 0;
     for (auto &r : generation) {
         for (auto c : r) {
-            if (c != HEALTHY)
+            if (c == INFECTED || c == SPOILED)
                 return false;
+            if (c == HEALTHY)
+                alive++;
         }
     }
+
+    if (alive < rows * columns * terminalState) {
+        // dead
+        return false;
+    }
+
+    // alive
     return true;
 }
 
 bool
 CA::dead ()
 {
+    long alive = 0;
     for (auto &r : generation) {
         for (auto c : r) {
-            if (c != DEAD)
-                return false;
+            if (c == HEALTHY)
+                alive++;
         }
     }
-    return true;
+
+    if (alive < rows * columns * terminalState) {
+        // dead
+        return true;
+    }
+
+    // alive
+    return false;
 }
