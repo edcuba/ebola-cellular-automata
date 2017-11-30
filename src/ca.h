@@ -23,6 +23,7 @@ class CA
     void seed (int amount);
     bool healthy ();
     bool dead ();
+    void saveToFile(std::string filename);
 
   protected:
     std::vector<Matrix> generations;

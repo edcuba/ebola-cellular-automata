@@ -1,6 +1,7 @@
 #include "ca.h"
 #include <cstdlib>
 #include <ctime>
+#include "bitmap_image.hpp"
 
 CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState)
     : columns (columns)
@@ -144,4 +145,30 @@ CA::dead ()
 
     // alive
     return false;
+}
+
+void
+CA::saveToFile(std::string filename)
+{
+    bitmap_image image(columns, rows);
+
+    // set background to white
+    image.set_all_channels(255, 255, 255);
+
+    for (std::size_t y = 0; y < rows; ++y)
+    {    
+        for (std::size_t x = 0; x < columns; ++x)
+        {
+            // TODO:
+            if (generation[y][x] == 0) {
+                image.set_pixel(x, y, 39, 117, 84);
+            } else if (generation[y][x] == 1 || generation[y][x] == 2) {
+                image.set_pixel(x, y, 170, 57, 57);
+            } else if (generation[y][x] == 3) {
+                image.set_pixel(x, y, 0, 0, 0);
+            }
+        }
+    }
+
+    image.save_image(filename);
 }

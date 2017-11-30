@@ -67,6 +67,7 @@ main (int argc, char **argv)
 
     // print last generation (dead/alive)
     cout << ca.dump () << endl;
+    ca.saveToFile("last_gen.bmp");
 
     if (ca.dead ()) {
         cout << "DEAD" << endl;
