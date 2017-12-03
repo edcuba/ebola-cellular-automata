@@ -1,5 +1,5 @@
 #include "csv.h"
-#include <ofstream>
+#include <fstream>
 
 CSV::CSV(string delimiter) : delimiter(delimiter) {   
 }

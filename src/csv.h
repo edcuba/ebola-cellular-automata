@@ -9,7 +9,7 @@ using namespace std;
 
 class CSV {
     public:
-    CSV::CSV(string delimiter);
+    CSV(string delimiter);
     void writeHeader(vector<string> columns);
     bool writeRow(vector<string> columns);
     bool writeToFile(string filename);

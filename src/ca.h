@@ -15,6 +15,11 @@ class CA
     const double longProb;
     const double deadProb;
     const double terminalState;
+
+    int numHealthy;
+    int numDead;
+    int numInfected;
+    
     CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState);
 
     void step (bool regenerate, bool delay);

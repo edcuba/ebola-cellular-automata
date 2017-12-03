@@ -13,6 +13,9 @@ CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double te
 {
     // initialize the random generator
     srand (time (NULL));
+    numHealthy = 0;
+    numDead = 0;
+    numInfected = 0;
 }
 
 int
@@ -34,6 +37,14 @@ Cell
 CA::nextState (size_t row, size_t column, bool regenerate, bool delay)
 {
     Cell val = generation[row][column];
+    if (val == 0) {
+        numHealthy += 1;
+    } else if (val == 1 || val == 2) {
+        numInfected += 1;
+    } else if (val == 3) {
+        numDead += 1;
+    }
+
     switch (val) {
         case DEAD:
             val = regenerate ? HEALTHY : DEAD;
@@ -48,6 +59,7 @@ CA::nextState (size_t row, size_t column, bool regenerate, bool delay)
             val = infectedNeighbours (row, column) > 0 ? INFECTED : HEALTHY;
             break;
     }
+
     return val;
 }
 
@@ -71,6 +83,10 @@ CA::step (bool regenerate, bool delay)
 void
 CA::randomStep ()
 {
+    numDead = 0;
+    numHealthy = 0;
+    numInfected = 0;
+
     int choice = rand () % 100;
     if (choice < longProb * 100) {
         // long step
