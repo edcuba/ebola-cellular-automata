@@ -52,11 +52,11 @@ main (int argc, char **argv)
     CA ca (rows, columns, longProb, deadProb, terminalState);
     CSV csv (",");
     vector<string> header;
-    header.push_back("time");
-    header.push_back("healthy");
-    header.push_back("infected");
-    header.push_back("dead");
-    csv.writeHeader(header);
+    header.push_back ("time");
+    header.push_back ("healthy");
+    header.push_back ("infected");
+    header.push_back ("dead");
+    csv.writeHeader (header);
 
     // place infected cells
     int seedCount = rows * columns * seedProb;
@@ -69,25 +69,25 @@ main (int argc, char **argv)
 
         // print generation
         // cout << ca.dump () << endl;
-        
+
         // perform step
         ca.randomStep ();
 
         vector<string> row;
-        row.push_back(std::to_string(time++));
-        row.push_back(std::to_string(ca.numHealthy));
-        row.push_back(std::to_string(ca.numInfected));
-        row.push_back(std::to_string(ca.numDead));
+        row.push_back (std::to_string (time++));
+        row.push_back (std::to_string (ca.numHealthy));
+        row.push_back (std::to_string (ca.numInfected));
+        row.push_back (std::to_string (ca.numDead));
 
-        csv.writeRow(row);
+        csv.writeRow (row);
 
-        //usleep (75000);
+        // usleep (75000);
     }
 
     // print last generation (dead/alive)
-    cout << ca.dump () << endl;
-    ca.saveToFile("last_gen.bmp");
-    csv.writeToFile("simulation.csv");
+    // cout << ca.dump () << endl;
+    ca.saveToFile ("last_gen.bmp");
+    csv.writeToFile ("simulation.csv");
 
     if (ca.dead ()) {
         cout << "DEAD" << endl;

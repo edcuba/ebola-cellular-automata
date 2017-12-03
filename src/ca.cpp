@@ -1,7 +1,7 @@
 #include "ca.h"
+#include "bitmap_image.hpp"
 #include <cstdlib>
 #include <ctime>
-#include "bitmap_image.hpp"
 
 CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState)
     : columns (columns)
@@ -37,25 +37,22 @@ Cell
 CA::nextState (size_t row, size_t column, bool regenerate, bool delay)
 {
     Cell val = generation[row][column];
-    if (val == 0) {
-        numHealthy += 1;
-    } else if (val == 1 || val == 2) {
-        numInfected += 1;
-    } else if (val == 3) {
-        numDead += 1;
-    }
 
     switch (val) {
         case DEAD:
+            numDead++;
             val = regenerate ? HEALTHY : DEAD;
             break;
         case SPOILED:
+            numInfected++;
             val = DEAD;
             break;
         case INFECTED:
+            numInfected++;
             val = delay ? SPOILED : DEAD;
             break;
         case HEALTHY:
+            numHealthy++;
             val = infectedNeighbours (row, column) > 0 ? INFECTED : HEALTHY;
             break;
     }
@@ -146,6 +143,11 @@ CA::healthy ()
 bool
 CA::dead ()
 {
+    // infected for more than 2 years
+    if (counter > 730) {
+        return true;
+    }
+
     long alive = 0;
     for (auto &r : generation) {
         for (auto c : r) {
@@ -164,26 +166,29 @@ CA::dead ()
 }
 
 void
-CA::saveToFile(std::string filename)
+CA::saveToFile (std::string filename)
 {
-    bitmap_image image(columns, rows);
+    bitmap_image image (columns, rows);
 
     // set background to white
-    image.set_all_channels(255, 255, 255);
+    image.set_all_channels (255, 255, 255);
 
-    for (std::size_t y = 0; y < rows; ++y)
-    {    
-        for (std::size_t x = 0; x < columns; ++x)
-        {
-            if (generation[y][x] == 0) {
-                image.set_pixel(x, y, 39, 117, 84);
-            } else if (generation[y][x] == 1 || generation[y][x] == 2) {
-                image.set_pixel(x, y, 170, 57, 57);
-            } else if (generation[y][x] == 3) {
-                image.set_pixel(x, y, 0, 0, 0);
+    for (std::size_t y = 0; y < rows; ++y) {
+        for (std::size_t x = 0; x < columns; ++x) {
+            switch (generation[y][x]) {
+                case HEALTHY:
+                    image.set_pixel (x, y, 39, 117, 84);
+                    break;
+                case INFECTED:
+                case SPOILED:
+                    image.set_pixel (x, y, 170, 57, 57);
+                    break;
+                case DEAD:
+                    image.set_pixel (x, y, 0, 0, 0);
+                    break;
             }
         }
     }
 
-    image.save_image(filename);
+    image.save_image (filename);
 }

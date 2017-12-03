@@ -19,7 +19,7 @@ class CA
     int numHealthy;
     int numDead;
     int numInfected;
-    
+
     CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState);
 
     void step (bool regenerate, bool delay);
@@ -28,7 +28,7 @@ class CA
     void seed (int amount);
     bool healthy ();
     bool dead ();
-    void saveToFile(std::string filename);
+    void saveToFile (std::string filename);
 
   protected:
     std::vector<Matrix> generations;
