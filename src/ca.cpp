@@ -66,6 +66,10 @@ CA::step (bool regenerate, bool delay)
     counter++;
     Matrix m (rows, columns);
 
+    numDead = 0;
+    numHealthy = 0;
+    numInfected = 0;
+
     // get state in next generation for every cell in the matrix
     for (size_t row = 0; row < rows; ++row) {
         for (size_t column = 0; column < columns; ++column) {
@@ -80,10 +84,6 @@ CA::step (bool regenerate, bool delay)
 void
 CA::randomStep ()
 {
-    numDead = 0;
-    numHealthy = 0;
-    numInfected = 0;
-
     int choice = rand () % 100;
     if (choice < longProb * 100) {
         // long step
