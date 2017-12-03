@@ -14,7 +14,7 @@ class CSV {
     bool writeRow(vector<string> columns);
     bool writeToFile(string filename);
     private:
-    int columnsPerRow;
+    size_t columnsPerRow;
     string delimiter;
     stringstream output;
 };

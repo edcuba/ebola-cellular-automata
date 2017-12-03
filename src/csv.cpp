@@ -8,7 +8,6 @@ void CSV::writeHeader(vector<string> columns) {
     columnsPerRow = columns.size();
 
     for (size_t i = 0; i < columns.size(); i++) {
-    if (i != 0)
         output << delimiter;
         output << columns[i];
     }
@@ -22,7 +21,6 @@ bool CSV::writeRow(vector<string> columns) {
     }
 
     for (size_t i = 0; i < columns.size(); i++) {
-    if (i != 0)
         output << delimiter;
         output << columns[i];
     }

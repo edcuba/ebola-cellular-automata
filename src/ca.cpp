@@ -175,7 +175,6 @@ CA::saveToFile(std::string filename)
     {    
         for (std::size_t x = 0; x < columns; ++x)
         {
-            // TODO:
             if (generation[y][x] == 0) {
                 image.set_pixel(x, y, 39, 117, 84);
             } else if (generation[y][x] == 1 || generation[y][x] == 2) {
