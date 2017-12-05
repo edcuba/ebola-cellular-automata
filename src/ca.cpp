@@ -1,8 +1,6 @@
 #include "ca.h"
 #include "bitmap_image.hpp"
-#include <chrono>
 #include <cstdlib>
-#include <ctime>
 
 CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState)
     : columns (columns)
@@ -12,9 +10,6 @@ CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double te
     , terminalState (terminalState)
     , generation (rows, columns)
 {
-    using namespace std::chrono;
-    // initialize the random generator
-    srand (duration_cast<milliseconds> (system_clock::now ().time_since_epoch ()).count ());
     numHealthy = 0;
     numDead = 0;
     numInfected = 0;
@@ -123,7 +118,7 @@ CA::seed (int amount)
 Cell
 CA::status ()
 {
-    if (counter > 180) {
+    if (counter > 100) {
         return DEAD;
     }
 

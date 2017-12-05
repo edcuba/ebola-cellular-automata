@@ -2,6 +2,7 @@
 #include "csv.h"
 #include <cstdlib>
 #include <ctime>
+#include <iomanip>
 #include <iostream>
 #include <unistd.h>
 
@@ -16,13 +17,13 @@ main (int argc, char **argv)
     double seedProb = 0.0055;
     int rows = 700;
     int columns = 700;
-    // srand (time (NULL));
+    srand (time (NULL));
 
     bool exportCSV = false;
     bool calcFatRate = false;
 
-    // having less than of cells 29% healthy means death
-    double terminalState = 0.29;
+    // having less than of cells 1/3 healthy means death
+    double terminalState = 1 / 3;
 
     // parse command line configuration
     int c;
@@ -86,9 +87,6 @@ main (int argc, char **argv)
         // run simulation while CA is not completely dead or empty
         while (ca.status () == INFECTED) {
 
-            // print generation
-            // cout << ca.dump () << endl;
-
             // perform step
             ca.randomStep ();
 
@@ -98,10 +96,8 @@ main (int argc, char **argv)
                 row.push_back (std::to_string (ca.numHealthy));
                 row.push_back (std::to_string (ca.numInfected));
                 row.push_back (std::to_string (ca.numDead));
+                csv.writeRow (row);
             }
-
-            // csv.writeRow (row);
-            // usleep (75000);
         }
 
         if (ca.status () == DEAD) {
@@ -113,10 +109,9 @@ main (int argc, char **argv)
     }
 
     if (calcFatRate) {
-        cout << "Fatality rate is " << deadCount * 100.0f / (float) runCount << " %\n";
+        cout << "Fatality rate is " << fixed << setprecision (2) << deadCount * 100.0f / runCount
+             << "%" << endl;
     }
-    // print last generation (dead/alive)
-    // cout << ca.dump () << endl;
 
     if (exportCSV) {
         csv.writeToFile ("simulation.csv");
