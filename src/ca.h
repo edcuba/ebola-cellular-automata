@@ -26,9 +26,10 @@ class CA
     void randomStep ();
     std::string dump ();
     void seed (int amount);
-    bool healthy ();
-    bool dead ();
+    Cell status ();
     void saveToFile (std::string filename);
+
+    int getDays () const;
 
   protected:
     std::vector<Matrix> generations;

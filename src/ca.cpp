@@ -1,7 +1,6 @@
 #include "ca.h"
 #include "bitmap_image.hpp"
 #include <cstdlib>
-#include <ctime>
 
 CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState)
     : columns (columns)
@@ -12,7 +11,6 @@ CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double te
     , generation (rows, columns)
 {
     // initialize the random generator
-    srand (time (NULL));
     numHealthy = 0;
     numDead = 0;
     numInfected = 0;
@@ -118,51 +116,29 @@ CA::seed (int amount)
     }
 }
 
-bool
-CA::healthy ()
+Cell
+CA::status ()
 {
+    if (counter > 180) {
+        return DEAD;
+    }
+
+    long infected = 0;
     long alive = 0;
     for (auto &r : generation) {
         for (auto c : r) {
             if (c == INFECTED || c == SPOILED)
-                return false;
-            if (c == HEALTHY)
+                infected++;
+            else if (c == HEALTHY)
                 alive++;
         }
     }
 
     if (alive < rows * columns * terminalState) {
-        // dead
-        return false;
+        return DEAD;
     }
 
-    // alive
-    return true;
-}
-
-bool
-CA::dead ()
-{
-    // infected for more than 2 years
-    if (counter > 730) {
-        return true;
-    }
-
-    long alive = 0;
-    for (auto &r : generation) {
-        for (auto c : r) {
-            if (c == HEALTHY)
-                alive++;
-        }
-    }
-
-    if (alive < rows * columns * terminalState) {
-        // dead
-        return true;
-    }
-
-    // alive
-    return false;
+    return infected > 0 ? INFECTED : HEALTHY;
 }
 
 void
@@ -191,4 +167,10 @@ CA::saveToFile (std::string filename)
     }
 
     image.save_image (filename);
+}
+
+int
+CA::getDays () const
+{
+    return counter;
 }
