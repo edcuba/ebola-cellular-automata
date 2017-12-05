@@ -118,7 +118,7 @@ CA::seed (int amount)
 Cell
 CA::status ()
 {
-    if (counter > 100) {
+    if (counter > 31) {
         return DEAD;
     }
 
