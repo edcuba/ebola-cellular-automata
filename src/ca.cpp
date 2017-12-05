@@ -2,6 +2,7 @@
 #include "bitmap_image.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 
 CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState)
     : columns (columns)
@@ -11,8 +12,9 @@ CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double te
     , terminalState (terminalState)
     , generation (rows, columns)
 {
+    using namespace std::chrono;
     // initialize the random generator
-    srand (time (NULL));
+    srand(duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
     numHealthy = 0;
     numDead = 0;
     numInfected = 0;
@@ -144,7 +146,7 @@ bool
 CA::dead ()
 {
     // infected for more than 2 years
-    if (counter > 730) {
+    if (counter > 180) {
         return true;
     }
 
