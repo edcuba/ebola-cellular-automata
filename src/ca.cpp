@@ -170,13 +170,15 @@ CA::status ()
 
     long infected = 0;
     long alive = 0;
+
     for (int x = 0; x < rows; ++x) {
         for (int y = 0; y < columns; ++y) {
             Cell c = generation[x][y];
-            if (c == INFECTED || c == SPOILED)
+            if (c == INFECTED || c == SPOILED) {
                 infected++;
-            else if (c == HEALTHY)
+            } else if (c == HEALTHY) {
                 alive++;
+            }
         }
     }
 
@@ -202,11 +204,13 @@ CA::saveToFile (std::string filename)
         for (int x = 0; x < columns; ++x) {
             switch (generation[y][x]) {
                 case HEALTHY:
-                    image.set_pixel (x, y, 39, 117, 84);
+                    image.set_pixel (x, y, 255, 255, 255);
                     break;
                 case INFECTED:
-                case SPOILED:
                     image.set_pixel (x, y, 170, 57, 57);
+                    break;
+                case SPOILED:
+                    image.set_pixel (x, y, 255, 255, 0);
                     break;
                 case DEAD:
                     image.set_pixel (x, y, 0, 0, 0);

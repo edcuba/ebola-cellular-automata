@@ -23,7 +23,7 @@ main (int argc, char **argv)
     bool calcFatRate = false;
 
     // having less than of cells 1/3 healthy means death
-    double terminalState = 1 / 3;
+    double terminalState = 1.0f / 3.0;
 
     // parse command line configuration
     int c;
@@ -75,6 +75,8 @@ main (int argc, char **argv)
         runCount = 100;
     }
 
+    std::string filename ("img/file");
+
     int deadCount = 0;
 
     for (int i = 0; i < runCount; i++) {
@@ -103,9 +105,9 @@ main (int argc, char **argv)
                 csv.writeRow (row);
             }
             // usleep (75000);
-        }
 
-        // cout << ca.dump () << endl;
+            // ca.saveToFile (filename + to_string (ca.getDays ()) + ".bmp");
+        }
 
         if (ca.status () == DEAD) {
             cout << "DEAD: " << ca.getDays () << endl;
