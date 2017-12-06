@@ -16,10 +16,16 @@ class CAVector
     typedef typename std::vector<T>::size_type size_type;
 
   public:
-    T &operator[] (size_type index) { return data[index + 1]; }
-    size_type size () const { return data.size () - 2; }
-    typename std::vector<T>::iterator begin () { return data.begin () + 1; }
-    typename std::vector<T>::iterator end () { return data.end () - 1; }
+    T &operator[] (int index)
+    {
+        if (index == -1) {
+            index = size () - 1;
+        }
+        return data[index % size ()];
+    }
+    size_type size () const { return data.size (); }
+    typename std::vector<T>::iterator begin () { return data.begin (); }
+    typename std::vector<T>::iterator end () { return data.end (); }
     virtual std::string dump () = 0;
 };
 
@@ -29,7 +35,7 @@ class CAVector
 class Row : public CAVector<Cell>
 {
   public:
-    Row (size_type columns) { data.resize (columns + 2); }
+    Row (size_type columns) { data.resize (columns); }
     std::string dump ()
     {
         std::string s;
@@ -48,7 +54,7 @@ class Matrix : public CAVector<Row>
   public:
     Matrix (size_type rows, size_type columns)
     {
-        for (size_type i = 0; i < rows + 2; ++i) {
+        for (size_type i = 0; i < rows; ++i) {
             data.push_back (Row (columns));
         }
     }
