@@ -2,14 +2,37 @@
 #include "bitmap_image.hpp"
 #include <cstdlib>
 
+Cell **
+CA::allocateMatrix ()
+{
+    Cell **m = new Cell *[rows];
+    for (size_t i = 0; i < rows; ++i) {
+        m[i] = new Cell[columns];
+        for (size_t j = 0; j < columns; ++j) {
+            m[i][j] = HEALTHY;
+        }
+    }
+    return m;
+}
+
+CA::~CA ()
+{
+    for (auto g : generations) {
+        for (size_t r = 0; r < rows; ++r) {
+            delete[] g[r];
+        }
+        delete[] g;
+    }
+}
+
 CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState)
     : columns (columns)
     , rows (rows)
     , longProb (longProb)
     , deadProb (deadProb)
     , terminalState (terminalState)
-    , generation (rows, columns)
 {
+    generation = allocateMatrix ();
     numHealthy = 0;
     numDead = 0;
     numInfected = 0;
@@ -19,9 +42,23 @@ int
 CA::infectedNeighbours (int row, int column)
 {
     int positive = 0;
+    int rw = rows;
+    int cl = columns;
     for (int r = row - 1; r <= row + 1; ++r) {
+        int x = r;
+        if (x == -1) {
+            x = rows - 1;
+        } else if (x == rw) {
+            x = 0;
+        }
         for (int c = column - 1; c <= column + 1; ++c) {
-            Cell val = generation[r][c];
+            int y = c;
+            if (y == -1) {
+                y = columns - 1;
+            } else if (y == cl) {
+                y = 0;
+            }
+            Cell val = generation[x][y];
             if (val == INFECTED || val == SPOILED) {
                 positive++;
             }
@@ -61,8 +98,8 @@ void
 CA::step (bool regenerate, bool delay)
 {
     counter++;
-    Matrix m (rows, columns);
 
+    Cell **m = allocateMatrix ();
     numDead = 0;
     numHealthy = 0;
     numInfected = 0;
@@ -74,7 +111,7 @@ CA::step (bool regenerate, bool delay)
         }
     }
 
-    generations.push_back (generation);
+    generations.push_back (m);
     generation = m;
 }
 
@@ -92,16 +129,6 @@ CA::randomStep ()
         // healthy
         step (true, false);
     }
-}
-
-std::string
-CA::dump ()
-{
-    std::string s;
-    s += "-- Generation ";
-    s += std::to_string (counter);
-    s += " --\n";
-    return s + generation.dump ();
 }
 
 void
@@ -124,8 +151,9 @@ CA::status ()
 
     long infected = 0;
     long alive = 0;
-    for (auto &r : generation) {
-        for (auto c : r) {
+    for (size_t x = 0; x < rows; ++x) {
+        for (size_t y = 0; y < columns; ++y) {
+            Cell c = generation[x][y];
             if (c == INFECTED || c == SPOILED)
                 infected++;
             else if (c == HEALTHY)
