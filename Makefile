@@ -10,5 +10,5 @@ $(TARGET): $(SRCS) $(HDRS)
 clean:
 	rm -f $(TARGET)
 
-run:
+run: $(TARGET)
 	./$(TARGET)
