@@ -60,6 +60,7 @@ main (int argc, char **argv)
         return 1;
     }
 
+    // prepare CSV header
     CSV csv (",");
     vector<string> header;
     header.push_back ("time");
@@ -69,6 +70,7 @@ main (int argc, char **argv)
     csv.writeHeader (header);
 
     int runCount = 1;
+
     if (calcFatRate) {
         runCount = 100;
     }
@@ -113,6 +115,7 @@ main (int argc, char **argv)
         }
     }
 
+    // calculate the fatality rate
     if (calcFatRate) {
         cout << "Fatality rate is " << fixed << setprecision (2) << deadCount * 100.0f / runCount
              << "%" << endl;

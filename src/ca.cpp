@@ -2,6 +2,9 @@
 #include "bitmap_image.hpp"
 #include <cstdlib>
 
+/**
+ * Create matrix for a single generation
+ */
 Cell **
 CA::allocateMatrix ()
 {
@@ -22,6 +25,9 @@ CA::~CA ()
     }
 }
 
+/**
+ * Initialize cellular automaton object and allocate matrix for the first generation
+ */
 CA::CA (int rows, int columns, double longProb, double deadProb, double terminalState)
     : columns (columns)
     , rows (rows)
@@ -41,6 +47,9 @@ CA::CA (int rows, int columns, double longProb, double deadProb, double terminal
     numInfected = 0;
 }
 
+/**
+ * Get count of infected neighbours in 3x3 grid with center at [row, column]
+ */
 int
 CA::infectedNeighbours (int row, int column)
 {
@@ -58,6 +67,9 @@ CA::infectedNeighbours (int row, int column)
     return positive;
 }
 
+/**
+ * Get value of particular cell in the next generation
+ */
 Cell
 CA::nextState (int row, int column, bool regenerate, bool delay)
 {
@@ -85,6 +97,9 @@ CA::nextState (int row, int column, bool regenerate, bool delay)
     return val;
 }
 
+/**
+ * Perform a step creating a new generation according to input parameters
+ */
 void
 CA::step (bool regenerate, bool delay)
 {
@@ -106,6 +121,9 @@ CA::step (bool regenerate, bool delay)
     generation = m;
 }
 
+/**
+ * Perform a random step due to step probabilities
+ */
 void
 CA::randomStep ()
 {
@@ -122,6 +140,9 @@ CA::randomStep ()
     }
 }
 
+/**
+ * Randomly seed @amount of infected cells into matrix
+ */
 void
 CA::seed (int amount)
 {
@@ -133,6 +154,13 @@ CA::seed (int amount)
     }
 }
 
+/**
+ * Get the status of current generation
+ * Result can be DEAD, INFECTED or HEALTHY
+ *  - DEAD: terminating condition has been met
+ *  - INFECTED: subject is alive, but there are still some infected cells
+ *  - HEALTHY: subject is alive and there are no infected cells
+ */
 Cell
 CA::status ()
 {
@@ -159,6 +187,9 @@ CA::status ()
     return infected > 0 ? INFECTED : HEALTHY;
 }
 
+/**
+ * Generate BMP image of current generation
+ */
 void
 CA::saveToFile (std::string filename)
 {

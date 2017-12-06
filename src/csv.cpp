@@ -6,6 +6,9 @@ CSV::CSV (string delimiter)
 {
 }
 
+/**
+ * Write the CSV header
+ **/
 void
 CSV::writeHeader (vector<string> columns)
 {
@@ -19,6 +22,9 @@ CSV::writeHeader (vector<string> columns)
     output << endl;
 }
 
+/**
+ * Write a single CSV row to output buffer
+ **/
 bool
 CSV::writeRow (vector<string> columns)
 {
@@ -36,6 +42,9 @@ CSV::writeRow (vector<string> columns)
     return true;
 }
 
+/**
+ * Write content of CSV buffer to a file
+ **/
 bool
 CSV::writeToFile (string filename)
 {
