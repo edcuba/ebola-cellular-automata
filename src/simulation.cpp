@@ -87,6 +87,8 @@ main (int argc, char **argv)
         // run simulation while CA is not completely dead or empty
         while (ca.status () == INFECTED) {
 
+            // cout << ca.dump () << endl;
+
             // perform step
             ca.randomStep ();
 
@@ -98,7 +100,10 @@ main (int argc, char **argv)
                 row.push_back (std::to_string (ca.numDead));
                 csv.writeRow (row);
             }
+            // usleep (75000);
         }
+
+        // cout << ca.dump () << endl;
 
         if (ca.status () == DEAD) {
             cout << "DEAD: " << ca.getDays () << endl;
