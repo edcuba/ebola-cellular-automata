@@ -6,11 +6,8 @@ Cell **
 CA::allocateMatrix ()
 {
     Cell **m = new Cell *[rows];
-    for (size_t i = 0; i < rows; ++i) {
+    for (int i = 0; i < rows; ++i) {
         m[i] = new Cell[columns];
-        for (size_t j = 0; j < columns; ++j) {
-            m[i][j] = HEALTHY;
-        }
     }
     return m;
 }
@@ -18,14 +15,14 @@ CA::allocateMatrix ()
 CA::~CA ()
 {
     for (auto g : generations) {
-        for (size_t r = 0; r < rows; ++r) {
+        for (int r = 0; r < rows; ++r) {
             delete[] g[r];
         }
         delete[] g;
     }
 }
 
-CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState)
+CA::CA (int rows, int columns, double longProb, double deadProb, double terminalState)
     : columns (columns)
     , rows (rows)
     , longProb (longProb)
@@ -33,6 +30,12 @@ CA::CA (size_t rows, size_t columns, double longProb, double deadProb, double te
     , terminalState (terminalState)
 {
     generation = allocateMatrix ();
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
+            generation[i][j] = HEALTHY;
+        }
+    }
+    generations.push_back (generation);
     numHealthy = 0;
     numDead = 0;
     numInfected = 0;
@@ -42,22 +45,10 @@ int
 CA::infectedNeighbours (int row, int column)
 {
     int positive = 0;
-    int rw = rows;
-    int cl = columns;
     for (int r = row - 1; r <= row + 1; ++r) {
-        int x = r;
-        if (x == -1) {
-            x = rows - 1;
-        } else if (x == rw) {
-            x = 0;
-        }
+        int x = (r < 0) ? rows + r : r % rows;
         for (int c = column - 1; c <= column + 1; ++c) {
-            int y = c;
-            if (y == -1) {
-                y = columns - 1;
-            } else if (y == cl) {
-                y = 0;
-            }
+            int y = (c < 0) ? columns + c : c % columns;
             Cell val = generation[x][y];
             if (val == INFECTED || val == SPOILED) {
                 positive++;
@@ -68,7 +59,7 @@ CA::infectedNeighbours (int row, int column)
 }
 
 Cell
-CA::nextState (size_t row, size_t column, bool regenerate, bool delay)
+CA::nextState (int row, int column, bool regenerate, bool delay)
 {
     Cell val = generation[row][column];
 
@@ -105,8 +96,8 @@ CA::step (bool regenerate, bool delay)
     numInfected = 0;
 
     // get state in next generation for every cell in the matrix
-    for (size_t row = 0; row < rows; ++row) {
-        for (size_t column = 0; column < columns; ++column) {
+    for (int row = 0; row < rows; ++row) {
+        for (int column = 0; column < columns; ++column) {
             m[row][column] = nextState (row, column, regenerate, delay);
         }
     }
@@ -151,8 +142,8 @@ CA::status ()
 
     long infected = 0;
     long alive = 0;
-    for (size_t x = 0; x < rows; ++x) {
-        for (size_t y = 0; y < columns; ++y) {
+    for (int x = 0; x < rows; ++x) {
+        for (int y = 0; y < columns; ++y) {
             Cell c = generation[x][y];
             if (c == INFECTED || c == SPOILED)
                 infected++;
@@ -176,8 +167,8 @@ CA::saveToFile (std::string filename)
     // set background to white
     image.set_all_channels (255, 255, 255);
 
-    for (std::size_t y = 0; y < rows; ++y) {
-        for (std::size_t x = 0; x < columns; ++x) {
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < columns; ++x) {
             switch (generation[y][x]) {
                 case HEALTHY:
                     image.set_pixel (x, y, 39, 117, 84);

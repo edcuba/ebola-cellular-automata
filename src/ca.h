@@ -9,8 +9,8 @@
 class CA
 {
   public:
-    const size_t columns;
-    const size_t rows;
+    const int columns;
+    const int rows;
     const double longProb;
     const double deadProb;
     const double terminalState;
@@ -19,7 +19,7 @@ class CA
     int numDead;
     int numInfected;
 
-    CA (size_t rows, size_t columns, double longProb, double deadProb, double terminalState);
+    CA (int rows, int columns, double longProb, double deadProb, double terminalState);
     ~CA ();
 
     void step (bool regenerate, bool delay);
@@ -34,7 +34,7 @@ class CA
     std::vector<Cell **> generations;
     Cell **generation = NULL;
     int counter = 0;
-    Cell nextState (size_t row, size_t column, bool regenerate, bool delay);
+    Cell nextState (int row, int column, bool regenerate, bool delay);
     int infectedNeighbours (int row, int column);
     Cell **allocateMatrix ();
 };
